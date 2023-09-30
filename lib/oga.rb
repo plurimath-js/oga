@@ -15,7 +15,13 @@ require 'oga/whitelist'
 require 'oga/xml/lexer'
 require 'oga/xml/parser'
 
-require 'liboga'
+if RUBY_PLATFORM == 'opal'
+  require 'oga/native/lexer'
+elsif ENV['OGA_PURERUBY']
+  require_relative '../ext/pureruby/oga/native/lexer'
+else
+  require 'liboga'
+end
 
 #:nocov:
 if RUBY_PLATFORM == 'java'

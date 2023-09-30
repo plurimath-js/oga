@@ -59,8 +59,10 @@
     whitespace_or_newline = whitespace | newline;
 
     action count_newlines {
-        /* 10 stands for '\n' */
-        if ( fc == 10 ) lines++;
+        
+        if  fc == 10 
+lines += 1
+end
     }
 
     action advance_newline {
@@ -97,12 +99,13 @@
         comment_allowed => {
             callback(id_on_comment_body, data, encoding, ts, te);
 
-            if ( lines > 0 )
-            {
+            if  lines > 0 
+
                 advance_line(lines);
 
                 lines = 0;
-            }
+            
+end
         };
 
         comment_end => {
@@ -136,12 +139,13 @@
         cdata_allowed => {
             callback(id_on_cdata_body, data, encoding, ts, te);
 
-            if ( lines > 0 )
-            {
+            if  lines > 0 
+
                 advance_line(lines);
 
                 lines = 0;
-            }
+            
+end
         };
 
         cdata_end => {
@@ -179,12 +183,13 @@
         proc_ins_allowed => {
             callback(id_on_proc_ins_body, data, encoding, ts, te);
 
-            if ( lines > 0 )
-            {
+            if  lines > 0 
+
                 advance_line(lines);
 
                 lines = 0;
-            }
+            
+end
         };
 
         proc_ins_end => {
@@ -206,12 +211,13 @@
     action emit_string {
         callback(id_on_string_body, data, encoding, ts, te);
 
-        if ( lines > 0 )
-        {
+        if  lines > 0 
+
             advance_line(lines);
 
             lines = 0;
-        }
+        
+end
     }
 
     action start_string_squote {
@@ -261,12 +267,13 @@
     action start_doctype {
         callback_simple(id_on_doctype_start);
 
-        if ( lines > 0 )
-        {
+        if  lines > 0 
+
             advance_line(lines);
 
             lines = 0;
-        }
+        
+end
 
         fnext doctype;
     }
@@ -276,12 +283,13 @@
         ^']'* $count_newlines => {
             callback(id_on_doctype_inline, data, encoding, ts, te);
 
-            if ( lines > 0 )
-            {
+            if  lines > 0 
+
                 advance_line(lines);
 
                 lines = 0;
-            }
+            
+end
         };
 
         ']' => { fnext doctype; };
@@ -330,12 +338,13 @@
     # Machine that processes the contents of an XML declaration tag.
     xml_decl := |*
         xml_decl_end => {
-            if ( lines > 0 )
-            {
+            if  lines > 0 
+
                 advance_line(lines);
 
                 lines = 0;
-            }
+            
+end
 
             callback_simple(id_on_xml_decl_end);
 
@@ -344,12 +353,13 @@
 
         # Attributes and their values (e.g. version="1.0").
         identifier => {
-            if ( lines > 0 )
-            {
+            if  lines > 0 
+
                 advance_line(lines);
 
                 lines = 0;
-            }
+            
+end
 
             callback(id_on_attribute, data, encoding, ts, te);
         };
@@ -395,23 +405,25 @@
     # Machine used for lexing the name/namespace of an element.
     element_name := |*
         identifier ':' => {
-            if ( !html_p )
-            {
+            if  !html_p 
+
                 callback(id_on_element_ns, data, encoding, ts, te - 1);
-            }
+            
+end
         };
 
         identifier => {
             callback(id_on_element_name, data, encoding, ts, te);
 
-            if ( html_p )
-            {
+            if  html_p 
+
                 fnext html_element_head;
-            }
-            else
-            {
+            
+else
+
                 fnext element_head;
-            }
+            
+end
         };
     *|;
 
@@ -424,12 +436,13 @@
         identifier => close_element;
 
         '>' => {
-            if ( lines > 0 )
-            {
+            if  lines > 0 
+
                 advance_line(lines);
 
                 lines = 0;
-            }
+            
+end
 
             fnext main;
         };
@@ -445,12 +458,13 @@
         squote | dquote => {
             fhold;
 
-            if ( lines > 0 )
-            {
+            if  lines > 0 
+
                 advance_line(lines);
 
                 lines = 0;
-            }
+            
+end
 
             fnext quoted_attribute_value;
         };
@@ -458,22 +472,23 @@
         any => {
             fhold;
 
-            if ( lines > 0 )
-            {
+            if  lines > 0 
+
                 advance_line(lines);
 
                 lines = 0;
-            }
+            
+end
 
-            if ( html_p )
-            {
+            if  html_p 
+
                 fnext unquoted_attribute_value;
-            }
-            /* XML doesn't support unquoted attribute values */
-            else
-            {
+            
+else
+
                 fret;
-            }
+            
+end
         };
     *|;
 
@@ -531,18 +546,19 @@
     action close_open_element {
         callback_simple(id_on_element_open_end);
 
-        if ( html_script_p() )
-        {
+        if  html_script_p() 
+
             fnext html_script;
-        }
-        else if ( html_style_p() )
-        {
+        
+elsif  html_style_p() 
+
             fnext html_style;
-        }
-        else
-        {
+        
+else
+
             fnext main;
-        }
+        
+end
     }
 
     action close_self_closing_element {
@@ -592,18 +608,19 @@
         '>' => {
             callback_simple(id_on_element_open_end);
 
-            if ( html_script_p() )
-            {
+            if  html_script_p() 
+
                 fnext html_script;
-            }
-            else if ( html_style_p() )
-            {
+            
+elsif  html_style_p() 
+
                 fnext html_style;
-            }
-            else
-            {
+            
+else
+
                 fnext main;
-            }
+            
+end
         };
 
         '/>' => close_self_closing_element;
@@ -636,24 +653,26 @@
     action emit_text {
         callback(id_on_text, data, encoding, ts, te);
 
-        if ( lines > 0 )
-        {
+        if  lines > 0 
+
             advance_line(lines);
 
             lines = 0;
-        }
+        
+end
     }
 
     text := |*
         terminate_text | allowed_text => {
             callback(id_on_text, data, encoding, ts, te);
 
-            if ( lines > 0 )
-            {
+            if  lines > 0 
+
                 advance_line(lines);
 
                 lines = 0;
-            }
+            
+end
 
             fnext main;
         };
@@ -665,12 +684,13 @@
             p    = mark - 1;
             mark = 0;
 
-            if ( lines > 0 )
-            {
+            if  lines > 0 
+
                 advance_line(lines);
 
                 lines = 0;
-            }
+            
+end
 
             fnext main;
         };

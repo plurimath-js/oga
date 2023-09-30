@@ -1,0 +1,6 @@
+puts STDIN.read.gsub(/\/\*.*?\*\//m, "")
+               .gsub(/if\s*\(([^}]*?)\)\s*\{([^}]*?)\}\s*else if\s*\(([^}]*?)\)\s*\{([^}]*?)\}\s*else\s*\{([^}]*?)\}/m, "if \\1\n\\2\nelsif \\3\n\\4\nelse\n\\5\nend")
+               .gsub(/if\s*\(([^}]*?)\)\s*\{([^}]*?)\}\s*else\s*\{([^}]*?)\}/m, "if \\1\n\\2\nelse\n\\3\nend")
+               .gsub(/if\s*\(([^}]*?)\)\s*\{([^}]*?)\}/m, "if \\1\n\\2\nend")
+               .gsub(/if\s*\(([^}]*?)\)\s*([^}]*?);/m, "if \\1\n\\2\nend")
+               .gsub("lines++", "lines += 1")

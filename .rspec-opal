@@ -1,0 +1,4 @@
+--default-path=spec
+-I lib
+-q oga/setup_opal
+-q ll/setup_opal

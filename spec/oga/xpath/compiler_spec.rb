@@ -70,6 +70,6 @@ describe Oga::XPath::Compiler do
 
         break
       end
-    end
+    end unless RUBY_ENGINE == 'opal'
   end
 end

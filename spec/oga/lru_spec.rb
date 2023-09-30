@@ -71,6 +71,7 @@ describe Oga::LRU do
       expect(cache.keys).to eq([:b, :a])
     end
 
+    # No support for threading in Opal
     describe 'using multiple threads' do
       it 'supports concurrent writes' do
         cache   = described_class.new
@@ -95,7 +96,7 @@ describe Oga::LRU do
 
         expect(cache.size).to eq(5)
       end
-    end
+    end unless RUBY_ENGINE == 'opal'
   end
 
   describe '#get_or_set' do

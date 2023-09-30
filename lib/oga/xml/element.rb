@@ -181,13 +181,13 @@ module Oga
       #
       # @return [String]
       def inner_text
-        text = ''
+        text = []
 
         text_nodes.each do |node|
           text << node.text
         end
 
-        text
+        text.join
       end
 
       # Returns any {Oga::XML::Text} nodes that are a direct child of this

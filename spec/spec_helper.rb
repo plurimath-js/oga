@@ -5,7 +5,11 @@ if ENV['COVERAGE']
   require_relative 'support/simplecov'
 end
 
-require_relative '../lib/oga'
+if RUBY_PLATFORM == 'opal'
+  require_relative 'support/opal_support'
+end
+
+require 'oga'
 require_relative 'support/parsing_helpers'
 require_relative 'support/evaluation_helpers'
 require_relative 'support/threading_helpers'

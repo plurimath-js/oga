@@ -29,7 +29,7 @@ module Oga
       # @return [String]
       def to_xml
         current = @start
-        output = ''
+        output = []
 
         while current
           children = false
@@ -93,7 +93,7 @@ module Oga
           end
         end
 
-        output
+        output.join
       end
 
       # @param [Oga::XML::Text] node
@@ -128,7 +128,7 @@ module Oga
       # @param [String] output The content of the element.
       def on_element(element, output)
         name = element.expanded_name
-        attrs = ''
+        attrs = []
 
         element.attributes.each do |attr|
           attrs << ' '
@@ -138,9 +138,9 @@ module Oga
         if self_closing?(element)
           closing_tag = html_void_element?(element) ? '>' : ' />'
 
-          output << "<#{name}#{attrs}#{closing_tag}"
+          output << "<#{name}#{attrs.join}#{closing_tag}"
         else
-          output << "<#{name}#{attrs}>"
+          output << "<#{name}#{attrs.join}>"
         end
       end
 
@@ -189,7 +189,7 @@ module Oga
         # Prevent excessive newlines in case the next node is a newline text
         # node.
         if first_child.is_a?(Text) && first_child.text.start_with?("\r\n", "\n")
-          output.chomp!
+          output[-1] = output[-1].chomp
         end
       end
 
